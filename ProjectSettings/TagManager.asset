@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - WALL
+  - BULLET
+  - ENEMY
+  - ENEMY_WEAPON
+  - ENEMY_BULLET
+  - MAP_OBJECT
+  - BUTTON_FIRE
+  - VR_JOYSTICK
+  - BUTTON_NORMALGUN
+  - BUTTON_MACHINEGUN
+  - BUTTON_GRENADE
+  - ITEM_FIRST_AID
+  - ITEM_AMMO_BOX
+  - ITEM_GRENADE
+  - BUTTON_BACKSTEP
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - Enemy
+  - VRPad
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
