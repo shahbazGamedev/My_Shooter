@@ -103,8 +103,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ace8e9d29f57a004f848ebfb80cbb2d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableDelay: 50
-  ammo: 3
+  disableDelay: 55
+  ammo: 5
 --- !u!136 &13641580
 CapsuleCollider:
   m_ObjectHideFlags: 1

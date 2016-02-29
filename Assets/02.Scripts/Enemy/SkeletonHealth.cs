@@ -3,8 +3,12 @@ using System.Collections;
 
 public class SkeletonHealth : MonoBehaviour {
 
+    public int defaultMaxHp;
     public int maxHp;
     public int currentHp;
+
+    private bool isFirstPowerUp = false;            // 첫번째 체력 강화가 되었는지
+    private bool isSecondPowerUp = false;           // 두번째 체력 강화가 되었는지
 
     private SkeletonCtrl skelCtrl;
 
@@ -15,6 +19,17 @@ public class SkeletonHealth : MonoBehaviour {
 
     void OnEnable()
     {
+        if (GameManager.instance.gameLevel >= 3 && !isFirstPowerUp) {
+            maxHp = defaultMaxHp + GameManager.instance.enemyHpUp;
+            isFirstPowerUp = true;
+        }
+
+        if (GameManager.instance.gameLevel >= 5 && !isSecondPowerUp)
+        {
+            maxHp = defaultMaxHp + GameManager.instance.enemyHpUp * 2;
+            isSecondPowerUp = true;
+        }
+
         currentHp = maxHp;
     }
 

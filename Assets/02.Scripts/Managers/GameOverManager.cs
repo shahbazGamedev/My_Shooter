@@ -1,8 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class GameOverManager : MonoBehaviour {
+
+    public Text gameOverTxt;
+    public Text gameOverScoreTxt;
 
     private Animator anim;
     private bool isEndClip = false;
@@ -19,7 +23,13 @@ public class GameOverManager : MonoBehaviour {
             anim.SetTrigger("GameOver");
         }
 
-        if(isEndClip && (Input.touchCount > 0 || Input.GetMouseButtonDown(0)))
+        if(GameManager.instance.isGameClear)
+        {
+            gameOverTxt.text = "Game Clear";
+            anim.SetTrigger("GameClear");
+        }
+
+        if(isEndClip && ( (Input.touchCount > 0) || Input.GetMouseButtonDown(0) ))
         {
             SceneManager.LoadScene("scTitle");
         }
@@ -28,5 +38,6 @@ public class GameOverManager : MonoBehaviour {
     public void EndGameOverClip()
     {
         isEndClip = true;
+        gameOverScoreTxt.text = "Total Score : " + ScoreManager.totalScore;
     }
 }

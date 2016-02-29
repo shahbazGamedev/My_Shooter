@@ -22,41 +22,47 @@ public class GameManager : MonoBehaviour {
 
     public int gameLevel = 1;                               // 현재 게임의 레벨
     public int maxGameLevel = 6;                            // 최대 게임 레벨
-    public float enemySpawnDelay = 2f;                      // 적 하나가 생성되는 딜레이
+    public float enemySpawnDelay;                           // 적 하나가 생성되는 딜레이
     public float itemSpawnDelay;
-    public bool isGameOver = false;
+    public bool isGameOver = false;                         // 플레이어 사망으로 게임 종료 시 true
+    public bool isGameClear = false;                        // 게임 조건 만족으로 게임 클리어 시 true
+    public bool isGameTimeUp = false;                       // 게임 종료 시간까지 버티면 true
 
-    public static int enemyCount = 0;                       // 현재 생성된 적의 수
-    public static GameManager instance = null;            // 싱글턴 패턴을 위한 인스턴스
+    public int enemyCount = 0;                              // 현재 생성된 적의 수
+    public int enemyHpUp;                                   // 게임 레벨 3, 5에서 이 수치만큼 적의 체력이 증가
+
+    public static GameManager instance = null;              // 싱글턴 패턴을 위한 인스턴스
 
     // 게임 레벨에 따라 Level 1 몬스터부터 6까지 누적되서 enemyList에 들어간다.
-    public int level1NumNormal = 10;                    // 레벨1의 NormalSkeleton의 수
-    public int level1NumSpear = 5;                      // 레벨1의 SpearSkeleton의 수
-    public int level1NumMage = 0;                       // 레벨1의 MageSkeleton의 수
+    public int level1NumNormal;                     // 레벨1의 NormalSkeleton의 수
+    public int level1NumSpear;                      // 레벨1의 SpearSkeleton의 수
+    public int level1NumMage;                       // 레벨1의 MageSkeleton의 수
 
-    public int level2NumNormal = 4;
-    public int level2NumSpear = 2;
-    public int level2NumMage = 5;
+    public int level2NumNormal;
+    public int level2NumSpear;
+    public int level2NumMage;
 
-    public int level3NumNormal = 4;
-    public int level3NumSpear = 2;
-    public int level3NumMage = 2;
+    public int level3NumNormal;
+    public int level3NumSpear;
+    public int level3NumMage;
 
-    public int level4NumNormal = 4;
-    public int level4NumSpear = 2;
-    public int level4NumMage = 2;
+    public int level4NumNormal;
+    public int level4NumSpear;
+    public int level4NumMage;
 
-    public int level5NumNormal = 0;
-    public int level5NumSpear = 5;
-    public int level5NumMage = 3;
+    public int level5NumNormal;
+    public int level5NumSpear;
+    public int level5NumMage;
 
-    public int level6NumNormal = 3;
-    public int level6NumSpear = 6;
-    public int level6NumMage = 3;
+    public int level6NumNormal;
+    public int level6NumSpear;
+    public int level6NumMage;
 
     public GameObject normalSkelPrefab;
     public GameObject spearSkelPrefab;
     public GameObject mageSkelPrefab;
+    public GameObject helicopter;
+    public GameObject gameClearColl;
     public Light mapLight;
     public Text timeText;
     public Text alertText;
@@ -67,7 +73,6 @@ public class GameManager : MonoBehaviour {
     public List<LevelEnemyNum> levelEnemyNumList = new List<LevelEnemyNum>();               // LevelEnemyNum을 순서대로 참조하기 위해 리스트로 관리
     public List<GameObject> enemyList = new List<GameObject>();                             // SpawnEnemy에서 참조할 현재 생성된 모든 적의 리스트
 
-    
     private float gameTimer = 0f;                                                           // 게임 내 시간
     private float defaultLightIntensity;                                                    // 초기 빛의 세기를 이 변수에 저장해둠
 
@@ -117,11 +122,14 @@ public class GameManager : MonoBehaviour {
     void OnEnable()
     {
         PlayerHealth.OnPlayerDie += this.OnPlayerDie;
+        PlayerGameClear.OnGameClear += this.OnGameClear;
+        
     }
 
     void OnDisable()
     {
         PlayerHealth.OnPlayerDie -= this.OnPlayerDie;
+        PlayerGameClear.OnGameClear -= this.OnGameClear;
     }
 
     // 입력된 적의 수를 기반으로 리스트 초기화
@@ -208,13 +216,25 @@ public class GameManager : MonoBehaviour {
     void GameLevelUp()
     {
         gameTimer = 0f;
-        if (gameLevel < maxGameLevel)
+
+        
+        if (gameLevel < maxGameLevel) // 게임 레벨이 아직 최대치가 아닐 때
         {
             gameLevel++;
+
+            if (gameLevel == 3 || gameLevel == 5)
+            {
+                StartCoroutine(DisplayAlertText("적의 체력이 높아집니다"));
+            }
+
             CreateEnemy(levelEnemyNumList[gameLevel - 1], gameLevel);
             SetLightIntensity();
             SetTimeText();
             StartCoroutine(SpawnItem());
+        }
+        else if(gameLevel >= maxGameLevel)  // 게임 최고 레벨이면서 시간이 다 됐다
+        {
+            GameTimeUp();
         }
     }
 
@@ -302,7 +322,7 @@ public class GameManager : MonoBehaviour {
             }
         }
 
-        StartCoroutine(DisplayAlertText("보급품이 생성되었습니다"));
+        StartCoroutine(DisplayAlertText("아이템이 생성되었습니다"));
     }
 
     // 아이템 스폰 지점 중 스폰 가능한 곳(오브젝트가 활성화 된 곳)의 번호를 반환
@@ -329,18 +349,39 @@ public class GameManager : MonoBehaviour {
         return itemSpawnIdx;
     }
 
+    // UI의 AlertText에 메시지 표시하고 지움
     IEnumerator DisplayAlertText(string text)
     {
         alertText.text = text;
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(3f);
 
         alertText.text = "";
     }
 
+    // 플레이어 사망 이벤트. 게임 오버 처리
     void OnPlayerDie()
     {
         isGameOver = true;
         StopAllCoroutines();
+    }
+
+    // 게임 클리어 이벤트
+    void OnGameClear()
+    {
+        isGameClear = true;
+        StopAllCoroutines();
+    }
+
+    // 0시까지 버티는데 성공
+    void GameTimeUp()
+    {
+        isGameTimeUp = true;
+        timeText.text = "0:00";
+
+        helicopter.SetActive(true);
+        gameClearColl.SetActive(true);
+
+        StartCoroutine(DisplayAlertText("7시 방향 헬기장으로 탈출하세요!"));
     }
 }

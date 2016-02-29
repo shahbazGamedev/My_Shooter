@@ -115,7 +115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 035dad9ab40bd114298c304df52d807a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableDelay: 50
+  disableDelay: 55
   healPoint: 10
 --- !u!1001 &100100000
 Prefab:

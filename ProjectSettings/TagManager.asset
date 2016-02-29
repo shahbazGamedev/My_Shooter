@@ -19,6 +19,8 @@ TagManager:
   - ITEM_AMMO_BOX
   - ITEM_GRENADE
   - BUTTON_BACKSTEP
+  - STOPPER
+  - GAME_CLEAR
   layers:
   - Default
   - TransparentFX
@@ -30,7 +32,7 @@ TagManager:
   - 
   - Enemy
   - VRPad
-  - 
+  - VRMoveArea
   - 
   - 
   - 

@@ -20,14 +20,21 @@ public class PlayerShooting : MonoBehaviour {
     public int machineGunAmmo = 0;                              // 머신건의 남은 탄환
     public int grenadeLauncherAmmo = 0;                         // 유탄 발사기의 남은 탄환
 
-    public Text WeaponText;
-    public Text AmmoText;
+    public Text weaponText;
+    public Text ammoText;
+
+    public Image normalBtnImg;
+    public Image machineBtnImg;
+    public Image grenadeBtnImg;
 
     private float timer = 0f;
     private float effectsDisplayTime = 0.2f;
 
     private Light gunLight;
     private ParticleSystem gunParticle;
+
+    private Color clearColor = new Color(1f, 1f, 1f, 1f);
+    private Color transparentColor = new Color(1f, 1f, 1f, 0.5f);
 
     void Awake()
     {
@@ -37,6 +44,7 @@ public class PlayerShooting : MonoBehaviour {
         shootDelay = normalGunDelay;
 
         DisplayAmmo();
+        SetBtnImgAlpha();
     }
 
     void Update()
@@ -88,23 +96,24 @@ public class PlayerShooting : MonoBehaviour {
                 {
                     curWeapon = CurrentWeapon.normalGun;
                     shootDelay = normalGunDelay;
-                    WeaponText.text = "Normal Gun";
+                    weaponText.text = "Normal Gun";
                 }
                 else if (hit.collider.CompareTag("BUTTON_MACHINEGUN"))
                 {
                     curWeapon = CurrentWeapon.machineGun;
                     shootDelay = machineGunDelay;
-                    WeaponText.text = "Machine Gun";
+                    weaponText.text = "Machine Gun";
                 }
                 else if (hit.collider.CompareTag("BUTTON_GRENADE"))
                 {
                     curWeapon = CurrentWeapon.grenadeLauncher;
                     shootDelay = grenadeLauncherDelay;
-                    WeaponText.text = "Grenade Launcher";
+                    weaponText.text = "Grenade Launcher";
                 }
             }
 
             DisplayAmmo();
+            SetBtnImgAlpha();
         }
 #endif
     }
@@ -115,22 +124,23 @@ public class PlayerShooting : MonoBehaviour {
         {
             curWeapon = CurrentWeapon.normalGun;
             shootDelay = normalGunDelay;
-            WeaponText.text = "Normal Gun";
+            weaponText.text = "Normal Gun";
         }
         else if (hit.collider.CompareTag("BUTTON_MACHINEGUN"))
         {
             curWeapon = CurrentWeapon.machineGun;
             shootDelay = machineGunDelay;
-            WeaponText.text = "Machine Gun";
+            weaponText.text = "Machine Gun";
         }
         else if (hit.collider.CompareTag("BUTTON_GRENADE"))
         {
             curWeapon = CurrentWeapon.grenadeLauncher;
             shootDelay = grenadeLauncherDelay;
-            WeaponText.text = "Grenade Launcher";
+            weaponText.text = "Grenade Launcher";
         }
 
         DisplayAmmo();
+        SetBtnImgAlpha();
     }
 
     // 터치 입력 처리. 공격 버튼과 무기 교체 버튼에 대해서만 처리한다
@@ -173,15 +183,15 @@ public class PlayerShooting : MonoBehaviour {
         switch (curWeapon)
         {
             case CurrentWeapon.normalGun:
-                AmmoText.text = "Ammo ∞";
+                ammoText.text = "Ammo ∞";
                 break;
 
             case CurrentWeapon.machineGun:
-                AmmoText.text = "Ammo " + machineGunAmmo;
+                ammoText.text = "Ammo " + machineGunAmmo;
                 break;
 
             case CurrentWeapon.grenadeLauncher:
-                AmmoText.text = "Ammo " + grenadeLauncherAmmo;
+                ammoText.text = "Ammo " + grenadeLauncherAmmo;
                 break;
         }
     }
@@ -285,5 +295,30 @@ public class PlayerShooting : MonoBehaviour {
     {
         grenadeLauncherAmmo += ammo;
         DisplayAmmo();
+    }
+
+    // 가지고 있는 무기의 버튼을 선명하게, 아닌 무기는 반투명하게 설정
+    void SetBtnImgAlpha()
+    {
+        switch (curWeapon)
+        {
+            case CurrentWeapon.normalGun:
+                normalBtnImg.color = clearColor;
+                machineBtnImg.color = transparentColor;
+                grenadeBtnImg.color = transparentColor;
+                break;
+
+            case CurrentWeapon.machineGun:
+                normalBtnImg.color = transparentColor;
+                machineBtnImg.color = clearColor;
+                grenadeBtnImg.color = transparentColor;
+                break;
+
+            case CurrentWeapon.grenadeLauncher:
+                normalBtnImg.color = transparentColor;
+                machineBtnImg.color = transparentColor;
+                grenadeBtnImg.color = clearColor;
+                break;
+        }
     }
 }

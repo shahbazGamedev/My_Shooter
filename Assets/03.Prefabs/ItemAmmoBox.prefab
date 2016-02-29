@@ -115,7 +115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbf5d5569cf4837459ba8ced806b0e9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableDelay: 50
+  disableDelay: 55
   ammo: 100
 --- !u!1001 &100100000
 Prefab:

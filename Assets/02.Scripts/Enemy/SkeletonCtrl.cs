@@ -53,6 +53,7 @@ public class SkeletonCtrl : MonoBehaviour {
         GetComponent<CapsuleCollider>().enabled = true;
 
         PlayerHealth.OnPlayerDie += this.OnPlayerDie;             // 이벤트 함수 추가
+        PlayerGameClear.OnGameClear += this.OnPlayerDie;          // 게임 클리어도 플레이어 사망 이벤트와 같은 것을 사용
 
         StartCoroutine(CheckState());
         StartCoroutine(ActionState());
@@ -61,6 +62,7 @@ public class SkeletonCtrl : MonoBehaviour {
     void OnDisable()
     {
         PlayerHealth.OnPlayerDie -= this.OnPlayerDie;
+        PlayerGameClear.OnGameClear -= this.OnPlayerDie;
     }
 
     // 적의 상태를 체크하고 변경
@@ -158,7 +160,9 @@ public class SkeletonCtrl : MonoBehaviour {
     {
         isDead = true;
 
-        ScoreManager.totalScore += score;
+        // 게임 시간이 다 되면 더이상 점수를 얻을 수 없다.
+        if(!GameManager.instance.isGameTimeUp)
+            ScoreManager.totalScore += score;
 
         GetComponent<NavMeshAgent>().enabled = false;
         GetComponent<Rigidbody>().isKinematic = true;
@@ -175,7 +179,7 @@ public class SkeletonCtrl : MonoBehaviour {
         anim.SetTrigger("Reset");
         gameObject.SetActive(false);
         curState = CurrentState.idle;
-        GameManager.enemyCount--;
+        GameManager.instance.enemyCount--;
     }
 
     // 플레이어 사망시
