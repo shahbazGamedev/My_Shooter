@@ -5,7 +5,7 @@ using System.Collections;
 
 public class ItemCtrl : MonoBehaviour {
 
-    public float disableDelay;
+    public float disableDelay; // 지정 시간이 지나면 비활성화
 
     void OnEnable()
     {
@@ -13,12 +13,15 @@ public class ItemCtrl : MonoBehaviour {
         StartCoroutine(DisableItem());
     }
 
-    // 랜덤하게 y축 기준으로 회전
+    // 함수 : RandomRotation
+    // 목적 : 아이템을 랜덤하게 y축 기준으로 회전
     void RandomRotation()
     {
         transform.rotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
     }
 
+    // 함수 : DisableItem
+    // 목적 : disableDelay 만큼 기다렸다 오브젝트 비활성화
     IEnumerator DisableItem()
     {
         yield return new WaitForSeconds(disableDelay);

@@ -70,14 +70,14 @@ public class GameManager : MonoBehaviour {
     public Transform[] enemySpawnPoints;
     public Transform[] itemSpawnPoints;
 
-    public List<LevelEnemyNum> levelEnemyNumList = new List<LevelEnemyNum>();               // LevelEnemyNum을 순서대로 참조하기 위해 리스트로 관리
-    public List<GameObject> enemyList = new List<GameObject>();                             // SpawnEnemy에서 참조할 현재 생성된 모든 적의 리스트
+    public List<LevelEnemyNum> levelEnemyNumList = new List<LevelEnemyNum>(); // LevelEnemyNum을 순서대로 참조하기 위해 리스트로 관리
+    public List<GameObject> enemyList = new List<GameObject>();               // SpawnEnemy에서 참조할 현재 생성된 모든 적의 리스트
 
-    private float gameTimer = 0f;                                                           // 게임 내 시간
-    private float defaultLightIntensity;                                                    // 초기 빛의 세기를 이 변수에 저장해둠
+    private float gameTimer = 0f;                                             // 게임 내 시간
+    private float defaultLightIntensity;                                      // 초기 빛의 세기를 이 변수에 저장해둠
 
-    const float eachLevelTime = 60f;                                                        // 한 레벨의 시간. 지정된 시간이 지나면 게임 레벨이 오른다.
-    const float eachLevelLight = 0.15f;                                                     // 게임 레벨이 오를 때 마다 이 수치만큼 빛이 약해진다.
+    const float eachLevelTime = 60f;                                          // 한 레벨의 시간. 지정된 시간이 지나면 게임 레벨이 오른다.
+    const float eachLevelLight = 0.15f;                                       // 게임 레벨이 오를 때 마다 이 수치만큼 빛이 약해진다.
 
     void Awake()
     {
@@ -121,9 +121,8 @@ public class GameManager : MonoBehaviour {
 
     void OnEnable()
     {
-        PlayerHealth.OnPlayerDie += this.OnPlayerDie;
+        PlayerHealth.OnPlayerDie += this.OnPlayerDie;   // 플레이어 사망, 게임 클리어 이벤트 함수 추가
         PlayerGameClear.OnGameClear += this.OnGameClear;
-        
     }
 
     void OnDisable()
@@ -132,7 +131,8 @@ public class GameManager : MonoBehaviour {
         PlayerGameClear.OnGameClear -= this.OnGameClear;
     }
 
-    // 입력된 적의 수를 기반으로 리스트 초기화
+    // 함수 : SetLevelEnemyNumList
+    // 목적 : 입력된 적의 수를 기반으로 levelEnemyNumList 초기화
     void SetLevelEnemyNumList()
     {
         LevelEnemyNum level1EnemyNum = new LevelEnemyNum(level1NumNormal, level1NumSpear, level1NumMage);
@@ -150,7 +150,8 @@ public class GameManager : MonoBehaviour {
         levelEnemyNumList.Add(level6EnemyNum);
     }
 
-    // 레벨마다 설정된 적의 수 만큼 생성하고 enemyList에 추가
+    // 함수 : CreateEnemy
+    // 목적 : 레벨마다 설정된 적의 수 만큼 생성하고 enemyList에 추가
     void CreateEnemy(LevelEnemyNum num, int level)
     {
         // NormalSkeleton 생성
@@ -181,7 +182,8 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    // enemyList에 등록된 비활성화된 적을 활성화 시키고 랜덤한 스폰 지역에 소환
+    // 함수 : SpawnEnemy
+    // 목적 : enemyList에 등록된 비활성화된 적을 활성화 시키고 랜덤한 스폰 지역에 소환
     IEnumerator SpawnEnemy()
     {
         while(!isGameOver)
@@ -195,8 +197,8 @@ public class GameManager : MonoBehaviour {
             if (enemyCount >= enemyList.Count)
                 continue;
 
-            int enemyIdx = Random.Range(0, enemyList.Count - 1);            // 리스트 중에서 랜덤한 적 선택
-            while(enemyList[enemyIdx].activeSelf)                           // 그 적이 이미 활성화 되어 있다면 비활성화 된 적을 찾을때까지 루프
+            int enemyIdx = Random.Range(0, enemyList.Count - 1);     // 리스트 중에서 랜덤한 적 선택
+            while(enemyList[enemyIdx].activeSelf)                    // 그 적이 이미 활성화 되어 있다면 비활성화 된 적을 찾을때까지 루프
             {
                 enemyIdx++;
                 if (enemyIdx >= enemyList.Count)
@@ -205,32 +207,35 @@ public class GameManager : MonoBehaviour {
 
             int spawnPointIdx = Random.Range(1, enemySpawnPoints.Length - 1);                   // 랜덤한 스폰 위치를 선택
 
+            // 선택된 스폰 위치로 자리를 옮기고 활성화
             enemyList[enemyIdx].transform.position = enemySpawnPoints[spawnPointIdx].position;
             enemyList[enemyIdx].transform.rotation = enemySpawnPoints[spawnPointIdx].rotation;
             enemyList[enemyIdx].SetActive(true);
 
-            enemyCount++;
+            enemyCount++; // 적 카운트 증가
         }
     }
 
+    // 함수 : GameLevelUp
+    // 목적 : 게임 레벨을 증가시키고 해당 게임 레벨에 맞는 적을 생성
     void GameLevelUp()
     {
-        gameTimer = 0f;
-
+        gameTimer = 0f; // 게임 타이머 초기화
         
         if (gameLevel < maxGameLevel) // 게임 레벨이 아직 최대치가 아닐 때
         {
-            gameLevel++;
+            gameLevel++; // 게임 레벨 증가
 
+            // 게임 레벨이 3 또는 5라면 메시지 출력
             if (gameLevel == 3 || gameLevel == 5)
             {
                 StartCoroutine(DisplayAlertText("적의 체력이 높아집니다"));
             }
 
-            CreateEnemy(levelEnemyNumList[gameLevel - 1], gameLevel);
-            SetLightIntensity();
-            SetTimeText();
-            StartCoroutine(SpawnItem());
+            CreateEnemy(levelEnemyNumList[gameLevel - 1], gameLevel);   // 게임 레벨에 맞는 적 생성
+            SetLightIntensity();                                        // 게임 레벨에 따라 빛의 세기 조절해 어두워짐
+            SetTimeText();                                              // 시간 텍스트 변경
+            StartCoroutine(SpawnItem());                                // 게임 레벨에 맞는 아이템 생성
         }
         else if(gameLevel >= maxGameLevel)  // 게임 최고 레벨이면서 시간이 다 됐다
         {
@@ -238,13 +243,15 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    // 현재 게임 레벨에 따른 조명을 설정. 게임 레벨이 오를수록 어두워짐
+    // 함수 : SetLightIntensity
+    // 목적 : 현재 게임 레벨에 따른 조명을 설정. 게임 레벨이 오를수록 어두워짐
     void SetLightIntensity()
     {
         mapLight.intensity = defaultLightIntensity - eachLevelLight * (gameLevel - 1);
     }
 
-    // 게임 시간 표시 UI를 세팅
+    // 함수 : SetTimeText
+    // 목적 : 게임 시간 표시 UI를 세팅
     void SetTimeText()
     {
         int time = 18;
@@ -253,8 +260,9 @@ public class GameManager : MonoBehaviour {
         timeText.text = time + ":00";
     }
 
-    // 현재 게임 레벨에 할당된 보급 아이템을 맵에 생성
-    // 게임 시작할 때 Start에서, 게임 레벨이 오를 때 GameLevelUp에서 호출
+    // 함수 : SpawnItem
+    // 목적 : 현재 게임 레벨에 할당된 보급 아이템을 맵에 생성
+    //        게임 시작할 때 Start에서, 게임 레벨이 오를 때 GameLevelUp에서 호출
     IEnumerator SpawnItem()
     {
         // 이전에 사용해서 비활성화된 아이템 스폰 지점을 다시 활성화시킴
@@ -325,14 +333,17 @@ public class GameManager : MonoBehaviour {
         StartCoroutine(DisplayAlertText("아이템이 생성되었습니다"));
     }
 
-    // 아이템 스폰 지점 중 스폰 가능한 곳(오브젝트가 활성화 된 곳)의 번호를 반환
-    // 아이템이 같은 위치에 중복 소환되는 것을 막기 위해서
+    // 함수 : GetItemSpawnIdx
+    // 목적 : 아이템 스폰 지점 중 스폰 가능한 곳(오브젝트가 활성화 된 곳)의 번호를 반환
+    //        아이템이 같은 위치에 중복 소환되는 것을 막기 위해서
     int GetItemSpawnIdx()
     {
         int itemSpawnIdx = Random.Range(1, itemSpawnPoints.Length - 1);
 
         for (int i = 0; i < itemSpawnPoints.Length - 2; i++)
         {
+            // 아이템 스폰 지점 중 활성화 된 곳의 인덱스를 반환
+            // 비활성화 되어 있다면 이미 아이템이 생성된 지점이라는 뜻
             if (itemSpawnPoints[itemSpawnIdx].gameObject.activeSelf)
             {
                 return itemSpawnIdx;
@@ -349,7 +360,8 @@ public class GameManager : MonoBehaviour {
         return itemSpawnIdx;
     }
 
-    // UI의 AlertText에 메시지 표시하고 지움
+    // 함수 : DisplayAlertText
+    // 목적 : UI의 AlertText에 메시지 표시하고 지움
     IEnumerator DisplayAlertText(string text)
     {
         alertText.text = text;
@@ -359,21 +371,25 @@ public class GameManager : MonoBehaviour {
         alertText.text = "";
     }
 
-    // 플레이어 사망 이벤트. 게임 오버 처리
+    // 함수 : OnPlayerDie
+    // 목적 : 플레이어 사망 이벤트. 게임 오버 처리
     void OnPlayerDie()
     {
         isGameOver = true;
         StopAllCoroutines();
     }
 
-    // 게임 클리어 이벤트
+    // 함수 : OnGameClear
+    // 목적 : 게임 클리어 이벤트 함수
     void OnGameClear()
     {
         isGameClear = true;
         StopAllCoroutines();
     }
 
-    // 0시까지 버티는데 성공
+    // 함수 : GameTimeUp
+    // 목적 : 0시까지 버티는데 성공하면 호출
+    //        헬기와 게임 클리어 컬라이더를 활성화
     void GameTimeUp()
     {
         isGameTimeUp = true;

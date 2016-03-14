@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// 유저 기즈모 스크립트
+
 public class MyGizmo : MonoBehaviour
 {
     public Color color = Color.yellow;

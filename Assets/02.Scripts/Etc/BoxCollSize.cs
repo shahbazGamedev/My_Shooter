@@ -15,9 +15,10 @@ public class BoxCollSize : MonoBehaviour {
         coll = GetComponent<BoxCollider>();
         rect = GetComponent<RectTransform>();
 
-        anchorX = rect.anchorMax.x - rect.anchorMin.x;
+        anchorX = rect.anchorMax.x - rect.anchorMin.x; // Anchor의 width, height를 계산
         anchorY = rect.anchorMax.y - rect.anchorMin.y;
 
+        // 현재 화면 크기에 비례해서 컬라이더의 크기를 조정
         coll.size = new Vector3(Screen.width * anchorX, Screen.height * anchorY);
     }
 }

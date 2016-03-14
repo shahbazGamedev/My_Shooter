@@ -6,18 +6,24 @@ using System.Collections;
 
 public class ScoreManager : MonoBehaviour {
 
-    public static int totalScore;
+    public static ScoreManager instance = null;
+
+    public int totalScore;
 
     private Text scoreText;
 
 	void Awake()
     {
+        instance = this;
         scoreText = GetComponent<Text>();
         totalScore = 0;
     }
 
-    void Update()
+    // 함수 : GetScore
+    // 목적 : 점수 획득. 몬스터가 호출하기 위해 public
+    public void GetScore(int score)
     {
+        totalScore += score;
         scoreText.text = "Score " + totalScore;
     }
 }

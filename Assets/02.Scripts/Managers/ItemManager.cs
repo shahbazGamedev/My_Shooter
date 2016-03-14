@@ -22,13 +22,14 @@ public class ItemManager : MonoBehaviour {
         }
     }
 
+    // 최대 생성될 아이템 갯수
     public int maxFirstAid = 10;
     public int maxAmmoBox = 10;
     public int maxItemGrenade = 10;
 
-    public int level1FirstAid;
-    public int level1AmmoBox;
-    public int level1ItemGrenade;
+    public int level1FirstAid;      // 레벨 1에 생성될 구급 상자 아이템
+    public int level1AmmoBox;       // 레벨 1에 생성될 탄약 상자 아이템
+    public int level1ItemGrenade;   // 레벨 1에 생성될 유탄 아이템
 
     public int level2FirstAid;
     public int level2AmmoBox;
@@ -69,7 +70,16 @@ public class ItemManager : MonoBehaviour {
 
     void Start()
     {
-        // 구급 상자를 미리 생성해 풀에 저장
+        CreateFirstAid();
+        CreateAmmoBox();
+        CreateGrenade();
+        SetLevelItemNumList();
+    }
+
+    // 함수 : CreateFirstAid
+    // 목적 : 구급 상자를 미리 생성해 풀에 저장
+    void CreateFirstAid()
+    {
         for (int i = 0; i < maxFirstAid; i++)
         {
             GameObject firstAid = Instantiate(firstAidPrefab);
@@ -77,8 +87,12 @@ public class ItemManager : MonoBehaviour {
             firstAid.SetActive(false);
             firstAidPool.Add(firstAid);
         }
+    }
 
-        // 탄약 상자를 미리 생성해 풀에 저장
+    // 함수 : CreateAmmoBox
+    // 목적 : 탄약 상자를 미리 생성해 풀에 저장
+    void CreateAmmoBox()
+    {
         for (int i = 0; i < maxAmmoBox; i++)
         {
             GameObject ammoBox = Instantiate(ammoBoxPrefab);
@@ -86,8 +100,12 @@ public class ItemManager : MonoBehaviour {
             ammoBox.SetActive(false);
             ammoBoxPool.Add(ammoBox);
         }
+    }
 
-        // 유탄 아이템을 미리 생성해 풀에 저장
+    // 함수 : CreateGrenade
+    // 목적 : 유탄 아이템을 미리 생성해 풀에 저장
+    void CreateGrenade()
+    {
         for (int i = 0; i < maxItemGrenade; i++)
         {
             GameObject itemGrenade = Instantiate(itemGrenadePrefab);
@@ -95,10 +113,10 @@ public class ItemManager : MonoBehaviour {
             itemGrenade.SetActive(false);
             itemGrenadePool.Add(itemGrenade);
         }
-
-        SetLevelItemNumList();
     }
 
+    // 함수 : SetLevelItemNumList
+    // 목적 : 레벨 아이템 리스트에 레벨 별 아이템 클래스를 등록
     void SetLevelItemNumList()
     {
         LevelItemNum level1ItemNum = new LevelItemNum(level1FirstAid, level1AmmoBox, level1ItemGrenade);

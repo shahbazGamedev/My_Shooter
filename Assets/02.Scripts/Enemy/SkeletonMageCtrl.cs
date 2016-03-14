@@ -5,7 +5,7 @@ using System.Collections;
 
 public class SkeletonMageCtrl : SkeletonCtrl {
 
-    public GameObject firePos;                       // throwObject가 발사되는 위치
+    public GameObject firePos; // throwObject가 발사되는 위치
 
     protected override void Awake()
     {
@@ -14,7 +14,7 @@ public class SkeletonMageCtrl : SkeletonCtrl {
 
     protected override void OnEnable()
     {
-        // 이 옵션이 없으면 EnableWeaponCollider에서 널 포인터 에러 발생
+        // 이 옵션이 없으면 FireObject에서 널 포인터 에러 발생
         // 초기에 적을 만들고 비활성화 하는 사이에 OnEnable이 호출되기 때문
         if (isFirstEnable)
         {
@@ -31,8 +31,9 @@ public class SkeletonMageCtrl : SkeletonCtrl {
         base.Update();
     }
 
-    // 공격 중인지 체크하고 탄 발사
-    // 여기선 오브젝트 활성화만 하고 FirePosCtrl.cs에서 OnEnable로 처리
+    // 함수 : FireObject
+    // 목적 : 공격 중인지 체크하고 탄 발사
+    //        여기선 오브젝트 활성화만 하고 FirePosCtrl.cs에서 OnEnable로 처리
     IEnumerator FireObject()
     {
         while (!isDead)

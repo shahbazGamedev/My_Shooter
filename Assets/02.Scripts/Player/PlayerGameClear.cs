@@ -3,7 +3,7 @@ using System.Collections;
 
 public class PlayerGameClear : MonoBehaviour {
 
-    // 게임 클리어 시 호출될 이벤트
+    // 게임 클리어 시 호출될 이벤트 함수
     public delegate void GameClearHandler();
     public static event GameClearHandler OnGameClear;
 
@@ -20,7 +20,7 @@ public class PlayerGameClear : MonoBehaviour {
 
     void OnTriggerEnter(Collider coll)
     { 
-        if (coll.CompareTag("GAME_CLEAR")) // 게임 클리어
+        if (coll.CompareTag("GAME_CLEAR")) // 게임 클리어 컬라이더
         {
             OnGameClear();              // 게임 클리어 이벤트 발생
             pHealth.enabled = false;    // 플레이어 컴포넌트 비활성화

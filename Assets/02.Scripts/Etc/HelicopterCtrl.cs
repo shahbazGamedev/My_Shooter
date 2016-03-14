@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// 0시에 등장하는 헬리콥터 스크립트
+
 public class HelicopterCtrl : MonoBehaviour {
 
     public float movSpeed;
@@ -23,6 +25,7 @@ public class HelicopterCtrl : MonoBehaviour {
 
     void OnTriggerEnter(Collider coll)
     {
+        // 헬기장의 STOPPER와 닿으면 정지
         if(coll.CompareTag("STOPPER"))
         {
             isMoving = false;

@@ -32,6 +32,8 @@ public class SkeletonWarriorCtrl : SkeletonCtrl {
         base.Update();
 	}
 
+    // 함수 : EnableWeaponCollider
+    // 목적 : 공격 상태가 되면 무기 컬라이더를 활성화
     IEnumerator EnableWeaponCollider()
     {
         while (!isDead)
