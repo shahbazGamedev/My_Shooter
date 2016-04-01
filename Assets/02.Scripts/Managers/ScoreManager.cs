@@ -20,7 +20,7 @@ public class ScoreManager : MonoBehaviour {
     }
 
     // 함수 : GetScore
-    // 목적 : 점수 획득. 몬스터가 호출하기 위해 public
+    // 목적 : 점수 획득. 몬스터가 호출하기 위해 public 선언
     public void GetScore(int score)
     {
         totalScore += score;

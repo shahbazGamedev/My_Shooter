@@ -182,10 +182,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 10
-  speed: 1500
+  speed: 1000
   disableDelay: 1
   explosionRadius: 3
-  explosionForce: 1000
   enemyMask:
     serializedVersion: 2
     m_Bits: 256
